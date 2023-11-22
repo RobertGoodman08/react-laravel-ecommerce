@@ -59,7 +59,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::delete('/product/{id}', [\App\Http\Controllers\ProductController::class, 'destroy']);
 
-    Route::apiResource('/orders', \App\Http\Controllers\OrderController::class)->only('index', 'show');
+//    Route::apiResource('/orders', \App\Http\Controllers\OrderController::class)->only('index', 'show');
+
+    Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index']);
+    Route::get('/order/{id}', [\App\Http\Controllers\OrderController::class, 'show']);
+
+
 //    Route::apiResource('/permissions', \App\Http\Controllers\PermissionController::class)->only('index');
     Route::get('/permissions', [\App\Http\Controllers\PermissionController::class, 'index']);
 
