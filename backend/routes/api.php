@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,46 +31,53 @@ Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register
 //});
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
+Route::prefix('admin')->middleware('auth:sanctum')->namespace('Admin')->group( function () {
+    Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index']);
 
 
     Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 
-    Route::get('/user/{id}', [\App\Http\Controllers\UserController::class, 'show']);
+    Route::get('/user/{id}', [\App\Http\Controllers\Admin\UserController::class, 'show']);
 
-    Route::post('/user', [\App\Http\Controllers\UserController::class, 'store']);
+    Route::post('/user', [\App\Http\Controllers\Admin\UserController::class, 'store']);
 
-    Route::put('/user/{id}', [\App\Http\Controllers\UserController::class, 'update']);
+    Route::put('/user/{id}', [\App\Http\Controllers\Admin\UserController::class, 'update']);
 
-    Route::delete('/user/{id}', [\App\Http\Controllers\UserController::class, 'destroy']);
+    Route::delete('/user/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy']);
 
+    Route::get('/user', [\App\Http\Controllers\Admin\UserController::class, 'user']);
 
-    Route::get('/products', [\App\Http\Controllers\ProductController::class, 'index']);
+    Route::post('/user/info', [\App\Http\Controllers\Admin\UserController::class, 'updateInfo']);
 
-    Route::get('/product/{id}', [\App\Http\Controllers\ProductController::class, 'show']);
-
-    Route::post('/product', [App\Http\Controllers\ProductController::class, 'store']);
-
-    Route::put('/product/{id}', [\App\Http\Controllers\ProductController::class, 'update']);
-
-    Route::post('/upload', [\App\Http\Controllers\ProductController::class, 'upload_image']);
-
-    Route::delete('/product/{id}', [\App\Http\Controllers\ProductController::class, 'destroy']);
-
-//    Route::apiResource('/orders', \App\Http\Controllers\OrderController::class)->only('index', 'show');
-
-    Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index']);
-    Route::get('/order/{id}', [\App\Http\Controllers\OrderController::class, 'show']);
+    Route::post('/users/password', [\App\Http\Controllers\Admin\UserController::class, 'updatePassword']);
 
 
-//    Route::apiResource('/permissions', \App\Http\Controllers\PermissionController::class)->only('index');
-    Route::get('/permissions', [\App\Http\Controllers\PermissionController::class, 'index']);
 
-    Route::get('/export', [\App\Http\Controllers\OrderController::class, 'export']);
+    Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index']);
+
+    Route::get('/product/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'show']);
+
+    Route::post('/product', [\App\Http\Controllers\Admin\ProductController::class, 'store']);
+
+    Route::put('/product/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'update']);
+
+    Route::post('/upload', [\App\Http\Controllers\Admin\ProductController::class, 'upload_image']);
+
+    Route::delete('/product/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy']);
+
+//    Route::apiResource('/orders', \App\Http\Controllers\Admin\OrderController::class)->only('index', 'show');
+
+    Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index']);
+    Route::get('/order/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'show']);
 
 
-    Route::get('/chart', [\App\Http\Controllers\DashboardController::class, 'chart']);
+//    Route::apiResource('/permissions', \App\Http\Controllers\Admin\PermissionController::class)->only('index');
+    Route::get('/permissions', [\App\Http\Controllers\Admin\PermissionController::class, 'index']);
+
+    Route::get('/export', [\App\Http\Controllers\Admin\OrderController::class, 'export']);
+
+
+    Route::get('/chart', [\App\Http\Controllers\Admin\DashboardController::class, 'chart']);
 
     Route::get('/roles', [RoleController::class, 'index']);
     Route::get('/role/{id}', [RoleController::class, 'show']);
@@ -79,5 +85,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/role_create', [RoleController::class, 'store']);
     Route::delete('/role/{id}', [RoleController::class, 'destroy']);
 
+
+});
+
+
+Route::prefix('influencer')->namespace('Influencer')->group( function () {
+    Route::get('products', [\App\Http\Controllers\Influencer\ProductController::class, 'index']);
 
 });

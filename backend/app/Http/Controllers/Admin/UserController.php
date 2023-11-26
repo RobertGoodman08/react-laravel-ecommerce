@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Exception;
 use App\Http\Requests\UpdateInfoRequest;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UserCreateRequest;
@@ -11,9 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Gate;
 
-class UserController extends Controller
+class UserController
 {
 
 
@@ -69,15 +69,31 @@ class UserController extends Controller
     }
 
 
-    public function user() {
-        $user = Auth::user();
+    public function user()
+    {
+        try {
+            $userId = Auth::id(); // Получаем ID текущего пользователя
 
-        return (new UserRerource($user))->additional([
-            'data' => [
-                'permissions' => $user->permissions()
-            ]
-        ]);
+            $user = User::find($userId); // Ищем пользователя по полученному ID
+
+            if ($user) {
+                // Если пользователь найден, возвращаем данные в нужном формате
+                return (new UserRerource($user))->additional([
+                    'data' => [
+                        'permissions' => $user->permissions, // Получаем разрешения пользователя
+                    ]
+                ]);
+            } else {
+                // Если пользователя нет, возвращаем ошибку 404
+                return response()->json(['error' => 'Пользователь не найден'], 404);
+            }
+        } catch (\Exception $e) {
+            // В случае возникновения ошибки, возвращаем сообщение об ошибке 500
+            return response()->json(['error' => 'Ошибка при получении данных пользователя: ' . $e->getMessage()], 500);
+        }
     }
+
+
 
 
 
