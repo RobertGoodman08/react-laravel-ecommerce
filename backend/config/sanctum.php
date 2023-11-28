@@ -64,4 +64,9 @@ return [
         'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
     ],
 
+    'abilities' => [
+        'admin' => 'Admin access',
+        'influencer' => 'Influencer',
+    ],
+
 ];

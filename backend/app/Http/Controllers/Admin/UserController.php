@@ -8,6 +8,7 @@ use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Resources\UserRerource;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -58,7 +59,14 @@ class UserController
     public function update(Request $request, $id) {
         $user = User::find($id);
 
-        $user->update($request->only('first_name', 'last_name', 'email', 'role_id'));
+        $user->update($request->only('first_name', 'last_name', 'email'));
+
+        UserRole::where('user_id', $user->id)->delete();
+
+        UserRole::create([
+           'user_id' => $user->id,
+           'role_id' => $request->input('role_id'),
+        ]);
 
         return response(new UserRerource($user), Response::HTTP_ACCEPTED);
     }
@@ -69,51 +77,7 @@ class UserController
     }
 
 
-    public function user()
-    {
-        try {
-            $userId = Auth::id(); // Получаем ID текущего пользователя
 
-            $user = User::find($userId); // Ищем пользователя по полученному ID
-
-            if ($user) {
-                // Если пользователь найден, возвращаем данные в нужном формате
-                return (new UserRerource($user))->additional([
-                    'data' => [
-                        'permissions' => $user->permissions, // Получаем разрешения пользователя
-                    ]
-                ]);
-            } else {
-                // Если пользователя нет, возвращаем ошибку 404
-                return response()->json(['error' => 'Пользователь не найден'], 404);
-            }
-        } catch (\Exception $e) {
-            // В случае возникновения ошибки, возвращаем сообщение об ошибке 500
-            return response()->json(['error' => 'Ошибка при получении данных пользователя: ' . $e->getMessage()], 500);
-        }
-    }
-
-
-
-
-
-    public function updateInfo(UpdateInfoRequest $request) {
-        $user = Auth::user();
-
-        $user->update($request->only('first_name', 'last_name', 'email'));
-
-        return response(new UserRerource($user), Response::HTTP_ACCEPTED);
-    }
-
-    public function updatePassword(UpdatePasswordRequest $request) {
-        $user = Auth::user();
-
-        $user->update([
-            'password' => Hash::make($request->input('password'))
-        ]);
-
-        return response(new UserRerource($user), Response::HTTP_ACCEPTED);
-    }
 
 
 }

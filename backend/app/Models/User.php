@@ -26,11 +26,37 @@ class User extends Authenticatable
     ];
 
     public function role() {
-        return $this->belongsTo(Role::class);
+        return $this->hasOneThrough(Role::class, UserRole::class, 'user_id', 'id', 'id', 'role_id');
     }
 
-    public function permissions() {
-        return $this->role->permissions->pluch('name');
+//    public function permissions() {
+//        return $this->role->permissions->pluck('name');
+//    }
+
+    public function hasAccess($access) {
+        return $this->permissions()->contains($access);
     }
+
+
+    public function isAdmin(): bool
+    {
+        return $this->is_influencer == 0;
+    }
+
+    public function isInfluencer(): bool
+    {
+        return $this->is_influencer == 1;
+    }
+
+    public function tokenCan($scope)
+    {
+        return $this->tokens->contains(function ($token) use ($scope) {
+            return $token->can($scope);
+        });
+    }
+
+
+
+
 
 }

@@ -23,7 +23,15 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('login', [AuthController::class, 'login'])->name('login');;
-Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register']);
+Route::post('register', [\App\Http\Controllers\AuthController::class, 'register']);
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [\App\Http\Controllers\AuthController::class, 'user']);
+    Route::post('/user/info', [\App\Http\Controllers\AuthController::class, 'updateInfo']);
+    Route::post('/users/password', [\App\Http\Controllers\AuthController::class, 'updatePassword']);
+});
 
 
 //Route::middleware('auth:sanctum')->group(function () {
@@ -31,7 +39,11 @@ Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register
 //});
 
 
-Route::prefix('admin')->middleware('auth:sanctum')->namespace('Admin')->group( function () {
+
+
+// middleware(['auth:sanctum', 'scope:admin'])
+
+Route::prefix('admin')->middleware(['auth:sanctum', 'scope:admin'])->namespace('Admin')->group( function () {
     Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index']);
 
 
@@ -45,11 +57,8 @@ Route::prefix('admin')->middleware('auth:sanctum')->namespace('Admin')->group( f
 
     Route::delete('/user/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy']);
 
-    Route::get('/user', [\App\Http\Controllers\Admin\UserController::class, 'user']);
 
-    Route::post('/user/info', [\App\Http\Controllers\Admin\UserController::class, 'updateInfo']);
 
-    Route::post('/users/password', [\App\Http\Controllers\Admin\UserController::class, 'updatePassword']);
 
 
 
@@ -92,4 +101,8 @@ Route::prefix('admin')->middleware('auth:sanctum')->namespace('Admin')->group( f
 Route::prefix('influencer')->namespace('Influencer')->group( function () {
     Route::get('products', [\App\Http\Controllers\Influencer\ProductController::class, 'index']);
 
+
+    Route::middleware(['auth:sanctum', 'scope:influencer'])->group(function () {
+
+    });
 });
