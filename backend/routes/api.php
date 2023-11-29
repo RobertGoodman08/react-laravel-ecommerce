@@ -103,6 +103,12 @@ Route::prefix('influencer')->namespace('Influencer')->group( function () {
 
 
     Route::middleware(['auth:sanctum', 'scope:influencer'])->group(function () {
-
+        Route::post('/links', [\App\Http\Controllers\Influencer\LinkController::class, 'store']);
     });
+});
+
+
+Route::prefix('checkout')->namespace('Checkout')->group( function () {
+    Route::get('/links/{code}', [\App\Http\Controllers\Checkout\LinkController::class, 'show']);
+    Route::post('/orders', [\App\Http\Controllers\Checkout\OrderController::class, 'store']);
 });
