@@ -22,6 +22,9 @@ class UserRerource extends JsonResource
           'email' => $this->email,
           $this->mergeWhen( Auth::user() && Auth::user()->isAdmin(), [
               'role' => $this->role
+          ]),
+          $this->mergeWhen( Auth::user() && Auth::user()->isInfluencer(), [
+              'role' => $this->revenue,
           ])
         ];
     }

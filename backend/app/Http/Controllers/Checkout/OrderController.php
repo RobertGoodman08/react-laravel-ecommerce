@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Checkout;
 
+use App\Events\OrderCompletedEvent;
 use App\Models\Link;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController
 {
@@ -78,5 +81,24 @@ class OrderController
         DB::commit();
 
         return $order;
+    }
+
+    public function confirm(Request $request) {
+        if(!$order = Order::whereTransactionId($request->input('source'))->first()) {
+            return response([
+               'error' => 'Order not found!'
+            ], 404);
+        }
+
+        $order->complete = 1;
+        $order->save();
+
+        event(new OrderCompletedEvent($order));
+
+
+
+        return response([
+            'message' => 'success'
+        ]);
     }
 }

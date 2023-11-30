@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\AdminAddedEvent;
 use App\Http\Controllers\Exception;
 use App\Http\Requests\UpdateInfoRequest;
 use App\Http\Requests\UpdatePasswordRequest;
@@ -42,6 +43,11 @@ class UserController
             $data['password'] = Hash::make($data['password']);
 
             $user = User::create($data);
+
+
+
+            event(new AdminAddedEvent($user));
+
 
             return response([
                 'id' => $user->id,
