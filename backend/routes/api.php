@@ -33,19 +33,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/password', [\App\Http\Controllers\AuthController::class, 'updatePassword']);
 });
 
+//Route::prefix('admin')->group(function () {
+//
+//});
+
 
 //Route::middleware('auth:sanctum')->group(function () {
 //    // Ваши защищенные маршруты здесь
 //});
 
 
-
-
 // middleware(['auth:sanctum', 'scope:admin'])
 
 Route::prefix('admin')->middleware(['auth:sanctum', 'scope:admin'])->namespace('Admin')->group( function () {
     Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index']);
-
 
     Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 
@@ -56,11 +57,6 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'scope:admin'])->namespace('
     Route::put('/user/{id}', [\App\Http\Controllers\Admin\UserController::class, 'update']);
 
     Route::delete('/user/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy']);
-
-
-
-
-
 
     Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index']);
 
@@ -105,6 +101,7 @@ Route::prefix('influencer')->namespace('Influencer')->group( function () {
     Route::middleware(['auth:sanctum', 'scope:influencer'])->group(function () {
         Route::post('/links', [\App\Http\Controllers\Influencer\LinkController::class, 'store']);
         Route::get('/status', [\App\Http\Controllers\Influencer\StatusController::class ,'index']);
+        Route::get('/ranking', [\App\Http\Controllers\Influencer\StatusController::class ,'rankings']);
     });
 });
 

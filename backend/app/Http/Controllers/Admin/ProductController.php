@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ProductUpdatedEvent;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -12,15 +13,12 @@ use Symfony\Component\HttpFoundation\Response;
 class ProductController
 {
 
-
     public function index() {
 
         $products = Product::paginate();
 
         return ProductResource::collection($products);
     }
-
-
 
 
     public function show($id) {
@@ -99,12 +97,10 @@ class ProductController
         $product->image = $imageUrl;
         $product->save();
 
+        event(new ProductUpdatedEvent());
+
         return response($product, Response::HTTP_ACCEPTED);
     }
-
-
-
-
 
 
     public function upload_image(Request $request) {
@@ -121,8 +117,6 @@ class ProductController
             return response()->json(['error' => 'No file uploaded.'], 400);
         }
     }
-
-
 
 
     public function destroy($id) {

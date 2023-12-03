@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Influencer;
 
 use App\Models\Link;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class StatusController
 {
@@ -27,4 +29,13 @@ class StatusController
            ];
         });
     }
+
+
+
+    public function rankings() {
+
+        return Cache::get('rankings');
+
+    }
+
 }
