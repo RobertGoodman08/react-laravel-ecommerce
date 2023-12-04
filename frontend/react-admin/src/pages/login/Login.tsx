@@ -35,13 +35,13 @@ const Login: React.FC = () => {
         const formData = new URLSearchParams();
         formData.append('email', email);
         formData.append('password', password);
+        formData.append('scope', 'admin');
 
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/login', formData, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                // withCredentials: true,
             });
 
 
