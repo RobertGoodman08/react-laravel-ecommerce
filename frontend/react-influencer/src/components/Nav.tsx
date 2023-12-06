@@ -1,42 +1,68 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { User } from '../classes/user';
+import { connect } from 'react-redux';
+import { setUser } from '../redux/actions/setUserAction';
+import { logoutUser } from "../redux/authActions";
 
-
-const Nav = () => {
-    return (
-        <header data-bs-theme="dark">
-            <div className="collapse text-bg-dark" id="navbarHeader">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-8 col-md-7 py-4">
-                            <h4>About</h4>
-                            <p className="text-body-secondary">Add some information about the album below, the author, or any other
-                                background context. Make it a few sentences long so folks can pick up some informative tidbits. Then,
-                                link them off to some social networking sites or contact information.</p>
-                        </div>
-                        <div className="col-sm-4 offset-md-1 py-4">
-                            <h4>Contact</h4>
-                            <ul className="list-unstyled">
-                                <li><a href="#" className="text-white">Follow on Twitter</a></li>
-                                <li><a href="#" className="text-white">Like on Facebook</a></li>
-                                <li><a href="#" className="text-white">Email me</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="navbar navbar-dark bg-dark shadow-sm">
-                <div className="container">
-                    <a href="#" className="navbar-brand d-flex align-items-center">
-                        <strong>Album</strong>
-                    </a>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader"
-                            aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                </div>
-            </div>
-        </header>
-    );
+interface NavProps {
+    user: User;
+    setUser: (user: User) => void;
+    logoutUser: () => void;
 }
 
-export default Nav;
+class Nav extends Component<NavProps> {
+    handleLogout = () => {
+        localStorage.clear();
+        this.props.logoutUser();
+        window.location.href = '/login';
+    };
+
+    render() {
+        const { user } = this.props;
+
+        return (
+            <header data-bs-theme="dark">
+                <div className="navbar navbar-dark bg-dark shadow-sm">
+                    <div className="container">
+                        <Link to={'/'} className="navbar-brand my-0 mr-md-auto font-weight-normal">
+                            Influencer
+                        </Link>
+                        {user ? (
+                            <div>
+                                <Link to={'/'} onClick={this.handleLogout} className="p-2 text-white">
+                                    Logout
+                                </Link>
+                                <Link to={'/rankings'} className="p-2 text-white">
+                                    Rankings
+                                </Link>
+                                <Link to={'/stats'} className="p-2 text-white">
+                                    Stats
+                                </Link>
+                            </div>
+                        ) : (
+                            <Link to={'/login'} className="p-2 text-white">
+                                Login
+                            </Link>
+                        )}
+                    </div>
+                </div>
+            </header>
+        );
+    }
+}
+
+const mapStateToProps = (state: { user: User }) => {
+    return {
+        user: state.user,
+    };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        setUser: (user: User) => dispatch(setUser(user)),
+        logoutUser: () => dispatch(logoutUser()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Nav);

@@ -6,30 +6,10 @@ import {connect} from "react-redux";
 
 
 class Nav extends Component<{user: User}>{
-    // state = {
-    //     user: new User(),
-    //     redirect: false
-    // }
-    //
-    // componentDidMount = async () => {
-    //     const response = await axios.get('user')
-    //
-    //     this.setState({
-    //         user: response.data.data
-    //     })
-    // }
-    //
-    // handleClick = () => {
-    //     localStorage.clear();
-    //     this.setState({
-    //         redirect: true
-    //     })
-    // }
-
-
 
 
     render() {
+
 
         return (
             <div>
