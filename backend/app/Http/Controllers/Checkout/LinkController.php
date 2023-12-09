@@ -11,6 +11,11 @@ class LinkController
     public function show($code) {
         $link = Link::where('code', $code)->first();
 
+        if (!$link) {
+            return response()->json(['error' => 'Link not found'], 404);
+        }
+
         return new LinkResource($link);
     }
+
 }
