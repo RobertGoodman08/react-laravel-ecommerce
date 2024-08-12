@@ -45,8 +45,10 @@ php artisan serve
 ### 3. Установка и настройка React
 Перейдите в каталог React:
 ```
-cd ../frontend
+cd ../frontend 
 ```
+[ next-checkout,  react-admin and react-influencer ]
+
 1. Установите зависимости с помощью npm:
 ```
 npm install
